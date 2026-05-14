@@ -1,4 +1,3 @@
-from django.urls import reverse
 from django.shortcuts import render
 def home_view(request):
     data = {
