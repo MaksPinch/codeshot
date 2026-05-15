@@ -1,8 +1,8 @@
 from django.shortcuts import render
 def home_view(request):
-    data = {
-        'title': 'Домашняя страница проекта CodeShot',
-        'name': 'Максим'
+    context = {
+        "title": "CodeShot",
+        "subtitle": "Create syntax-highlighted code previews.",
     }
-    return render(request, 'codeshot/home.html', context=data)
+    return render(request, 'codeshot/home.html', context)
 
