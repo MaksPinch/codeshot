@@ -17,7 +17,7 @@ def home_view(request):
                 form.cleaned_data["code"], form.cleaned_data["language"]
             )
     else:
-        form = CodeInputForm()
+        form = CodeInputForm(initial=get_initial_form_data(request))
 
     context = {
         "title": "CodeShot",
@@ -27,3 +27,11 @@ def home_view(request):
     }
 
     return render(request, "codeshot/home.html", context)
+
+
+def get_initial_form_data(request):
+    return {
+        "code": request.session.get("code", 'print("Hello,CodeShot!")'),
+        "language": request.session.get("language", "python"),
+        "filename": request.session.get("filename", "main.py"),
+    }
