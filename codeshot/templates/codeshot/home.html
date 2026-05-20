@@ -13,18 +13,23 @@
       </section>
       <section>
         <form method="post">
-          {% csrf_token %} <label for="id_language">Language</label>
-          <select id="id_language" name="language">
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-          </select>
-          <label for="id_filename">Filename</label>
-          <input id="id_filename" type="text" name="filename" value="main.py" />
-          <label for="id_code">Code</label>
-          <textarea id="id_code" name="code" rows="12">
-print("Hello, CodeShot!")
-</textarea
-          >
+          {% csrf_token %}
+          <div>
+            <label for="{{ form.language.id_for_label}}">Language</label> {{
+            form.language }} {{ form.language.errors }}
+          </div>
+          <div>
+            <label
+              for="{{ form.filename.id_for_label
+}}"
+              >Filename</label
+            >
+            {{ form.filename }} {{ form.filename.errors }}
+          </div>
+          <div>
+            <label for="{{ form.code.id_for_label }}">Code</label> {{ form.code
+            }} {{ form.code.errors }}
+          </div>
           <button type="submit">Generate preview</button>
         </form>
       </section>
