@@ -10,6 +10,9 @@ def home_view(request):
     if request.method == "POST":
         form = CodeInputForm(request.POST)
         if form.is_valid():
+            request.session["code"] = form.cleaned_data["code"]
+            request.session["language"] = form.cleaned_data["language"]
+            request.session["filename"] = form.cleaned_data["filename"]
             highlighted_code = highlight_code(
                 form.cleaned_data["code"], form.cleaned_data["language"]
             )
@@ -24,4 +27,3 @@ def home_view(request):
     }
 
     return render(request, "codeshot/home.html", context)
-
