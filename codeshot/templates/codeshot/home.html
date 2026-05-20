@@ -1,12 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
-</head>
-<body>
-    <h1>{{ title }}</h1>
-    <p>{{ subtitle }}</p>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    <main>
+      <section>
+        <h1>{{ title }}</h1>
+        <p>{{ subtitle }}</p>
+      </section>
+      <section>
+        <form method="post">
+          {% csrf_token %} <label for="id_language">Language</label>
+          <select id="id_language" name="language">
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+          </select>
+          <label for="id_filename">Filename</label>
+          <input id="id_filename" type="text" name="filename" value="main.py" />
+          <label for="id_code">Code</label>
+          <textarea id="id_code" name="code" rows="12">
+print("Hello, CodeShot!")
+</textarea
+          >
+          <button type="submit">Generate preview</button>
+        </form>
+      </section>
+      <section aria-label="Preview">
+        <h2>Preview</h2>
+        <pre><code>Preview will appear here.</code></pre>
+      </section>
+    </main>
+  </body>
 </html>
