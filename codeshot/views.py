@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .forms import CodeInputForm 
+from codeshot.forms import CodeInputForm
 
 
 def home_view(request):
