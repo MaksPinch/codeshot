@@ -15,6 +15,11 @@ def test_homepage():
     assert b'name="filename"' in response.content
     assert b"Generate preview" in response.content
 
+    assert b'class="app-shell"' in response.content
+    assert b'class="editor-panel"' in response.content
+    assert b'class="preview-panel"' in response.content
+    assert b'class="preview-frame"' in response.content
+
 
 @pytest.mark.django_db
 def test_valid_post_saves_code_input_in_session():
@@ -28,7 +33,7 @@ def test_valid_post_saves_code_input_in_session():
             "filename": "saved.py",
         },
     )
-    
+
     assert response.status_code == 200
     session = client.session
     assert session["code"] == "print('saved')"
