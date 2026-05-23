@@ -35,14 +35,11 @@
         <section class="preview-panel" aria-label="Preview">
           <h2>Preview</h2>
           <div class="preview-frame">
-            {% if highlighted_code %}
-              {{ highlighted_code|safe }}
-            {% else %}
-              <pre><code>Preview will appear here.</code></pre>
+            {% if highlighted_code %} {{ highlighted_code|safe }} {% else %}
+            <pre><code>Preview will appear here.</code></pre>
             {% endif %}
           </div>
         </section>
-
       </section>
     </main>
   </body>
