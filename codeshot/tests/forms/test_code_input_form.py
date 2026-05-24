@@ -1,4 +1,4 @@
-from codeshot.froms import CodeInputForm
+from codeshot.forms import CodeInputForm
 
 
 def test_code_input_form_accepts_valid_data():

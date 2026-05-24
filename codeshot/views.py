@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .froms import CodeInputForm
+from .forms import CodeInputForm
 from .services.highlighting import highlight_code
 
 
