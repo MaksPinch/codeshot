@@ -27,6 +27,20 @@
               {{ form.filename }} {{ form.filename.errors }}
             </div>
             <div>
+              <label for="{{ form.theme.id_for_label }}">Theme</label>
+              {{ form.theme }} {{ form.theme.errors }}
+            </div>
+            <div>
+              <label for="{{ form.font_size.id_for_label }}"
+                >Font Size (px)</label
+              >
+              {{ form.font_size }} {{ form.font_size.errors }}
+            </div>
+            <div>
+              <label for="{{ form.padding.id_for_label }}">Padding (px)</label>
+              {{ form.padding }} {{ form.padding.errors }}
+            </div>
+            <div>
               <label for="{{ form.code.id_for_label }}">Code</label>
               {{ form.code }} {{ form.code.errors }}
             </div>
