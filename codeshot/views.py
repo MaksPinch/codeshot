@@ -1,5 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import render
-
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from .forms import CodeInputForm
 from .services.preview import build_preview_context
 
@@ -38,3 +40,21 @@ def get_initial_form_data(request):
         "language": request.session.get("language", "python"),
         "filename": request.session.get("filename", "main.py"),
     }
+
+
+@csrf_exempt
+@require_POST
+def preview_view(request):
+    form = CodeInputForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"errors": form.errors}, status=400)
+    preview_context = build_preview_context(form.cleaned_data)
+    return JsonResponse(
+        {
+            "highlighted_code": preview_context["highlighted_code"],
+            "filename": preview_context["preview_filename"],
+            "theme": preview_context["preview_theme"],
+            "font_size": preview_context["preview_font_size"],
+            "padding": preview_context["preview_padding"],
+        }
+    )
