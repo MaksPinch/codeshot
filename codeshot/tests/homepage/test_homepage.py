@@ -1,6 +1,8 @@
 import pytest
 from django.urls import reverse
 from django.test import Client
+from django.urls import reverse
+from rest_framework.test import APIClient
 
 def test_homepage():
     client = Client()
@@ -55,3 +57,20 @@ def test_get_restores_form_values_from_session():
     assert response.status_code == 200
     assert b"print(&#x27;restored&#x27;)" in response.content
     assert b"restored.py" in response.content
+
+@pytest.mark.django_db
+def test_preview_does_not_render_raw_script_tag_from_user_code():
+    client = APIClient()
+    response = client.post(
+        reverse("home"),
+        {
+            "code": "<script>alert('xss')</script>",
+            "language": "python",
+            "filename": "xss.py",
+            "theme": "default",
+            "font_size": 14,
+            "padding": 24,
+        },
+    )
+    assert response.status_code == 200
+    assert b"<script>alert" not in response.content
