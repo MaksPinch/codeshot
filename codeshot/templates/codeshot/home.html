@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'codeshot/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'codeshot/styles.css' %}" />
     <title>{{ title }}</title>
   </head>
   <body>
@@ -27,6 +27,20 @@
               {{ form.filename }} {{ form.filename.errors }}
             </div>
             <div>
+              <label for="{{ form.theme.id_for_label }}">Theme</label>
+              {{ form.theme }} {{ form.theme.errors }}
+            </div>
+            <div>
+              <label for="{{ form.font_size.id_for_label }}"
+                >Font Size (px)</label
+              >
+              {{ form.font_size }} {{ form.font_size.errors }}
+            </div>
+            <div>
+              <label for="{{ form.padding.id_for_label }}">Padding (px)</label>
+              {{ form.padding }} {{ form.padding.errors }}
+            </div>
+            <div>
               <label for="{{ form.code.id_for_label }}">Code</label>
               {{ form.code }} {{ form.code.errors }}
             </div>
@@ -36,8 +50,18 @@
 
         <section class="preview-panel" aria-label="Preview">
           <h2>Preview</h2>
-          <div class="preview-frame">
-            {% if highlighted_code %} {{ highlighted_code|safe }} {% else %}
+          <div
+            class="preview-frame preview-theme-{{ preview_theme|default:'default' }}"
+          >
+            {% if highlighted_code %}
+            <div class="preview-header">{{ preview_filename }}</div>
+            <div
+              class="preview-code"
+              style="font-size: {{ preview_font_size }}px; padding: {{preview_padding }}px;"
+            >
+              {{ highlighted_code|safe }}
+            </div>
+            {% else %}
             <pre><code>Preview will appear here.</code></pre>
             {% endif %}
           </div>
