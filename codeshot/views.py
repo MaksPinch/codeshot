@@ -6,6 +6,11 @@ from .forms import CodeInputForm
 from .services.preview import build_preview_context
 
 
+def persist_form_data(request, cleaned_data):
+    for field_name in ["code", "language", "filename", "theme", "font_size", "padding"]:
+        request.session[field_name] = cleaned_data[field_name]
+
+
 def home_view(request):
     preview_context = {}
 
@@ -13,17 +18,9 @@ def home_view(request):
         form = CodeInputForm(request.POST)
         if form.is_valid():
             preview_context = build_preview_context(form.cleaned_data)
-
-            request.session["code"] = form.cleaned_data["code"]
-            request.session["language"] = form.cleaned_data["language"]
-            request.session["filename"] = form.cleaned_data["filename"]
-            request.session["theme"] = form.cleaned_data["theme"]
-            request.session["font_size"] = form.cleaned_data["font_size"]
-            request.session["padding"] = form.cleaned_data["padding"]
-
+            persist_form_data(request, form.cleaned_data)
     else:
         form = CodeInputForm(initial=get_initial_form_data(request))
-
     context = {
         "title": "CodeShot",
         "subtitle": "Create syntax-highlighted code previews.",
