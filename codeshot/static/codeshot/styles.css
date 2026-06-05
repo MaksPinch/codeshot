@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+.app-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 20px;
+}
+
+.hero {
+    margin-bottom: 24px;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.editor-panel,
+.preview-panel {
+    background: #ffffff;
+    border: 1px solid #d9e0ec;
+    border-radius: 8px;
+}
+
+.code-form {
+    display: grid;
+    gap: 16px;
+}
+
+.code-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.code-form input,
+.code-form select,
+.code-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.preview-frame {
+    overflow: auto;
+    background: #282a36;
+    color: #f8f8f2;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+@media (max-width: 860px) {
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+}
