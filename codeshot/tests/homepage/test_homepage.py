@@ -29,6 +29,9 @@ def test_valid_post_saves_code_input_in_session():
             "code": "print('saved')",
             "language": "python",
             "filename": "saved.py",
+            "theme": "default",
+            "font_size": 14,
+            "padding": 24,
         },
     )
 
@@ -37,7 +40,6 @@ def test_valid_post_saves_code_input_in_session():
     assert session["code"] == "print('saved')"
     assert session["language"] == "python"
     assert session["filename"] == "saved.py"
-
 
 @pytest.mark.django_db
 def test_get_restores_form_values_from_session():
