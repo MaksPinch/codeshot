@@ -1,10 +1,9 @@
 import pytest
 from django.urls import reverse
-from rest_framework.test import APIClient
-
+from django.test import Client
 
 def test_homepage():
-    client = APIClient()
+    client = Client()
     url = reverse("home")
     response = client.get(url)
 
@@ -23,8 +22,7 @@ def test_homepage():
 
 @pytest.mark.django_db
 def test_valid_post_saves_code_input_in_session():
-    client = APIClient()
-
+    client = Client()
     response = client.post(
         reverse("home"),
         {
@@ -43,8 +41,7 @@ def test_valid_post_saves_code_input_in_session():
 
 @pytest.mark.django_db
 def test_get_restores_form_values_from_session():
-    client = APIClient()
-
+    client = Client()
     session = client.session
     session["code"] = "print('restored')"
     session["language"] = "python"
