@@ -1,0 +1,31 @@
+POST http://127.0.0.1:8000/preview/
+Content-Type: application/x-www-form-urlencoded
+
+code=print("test")
+&language=python
+&filename=test.py
+&theme=default
+&font_size=24
+&padding=36
+
+
+###
+POST http://127.0.0.1:8000/preview/
+Cache-Type: application/x-www-form-urlencoded
+
+code=print("feild test")
+&language=python
+&theme=dracula
+
+
+###
+GET http://127.0.0.1:8000/preview/
+Content-Type: application/x-www-form-urlencoded
+
+code=print("test")
+&language=python
+&filename=test.py
+&theme=default
+&font_size=24
+&padding=36
+
