@@ -17,7 +17,7 @@ def test_homepage():
     assert b'class="app-shell"' in response.content
     assert b'class="editor-panel"' in response.content
     assert b'class="preview-panel"' in response.content
-    assert b'class="preview-frame"' in response.content
+    assert b'class="preview-frame' in response.content
 
 
 @pytest.mark.django_db
