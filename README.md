@@ -26,6 +26,15 @@ python -m pytest
 ```bash
 python manage.py runserver
 ```
+## Image export
+CodeShot exports the current editor state as an image.
+Supported formats:
+- PNG: `GET /download/png/`
+- JPG: `GET /download/jpg/`
+The export endpoints use the latest valid editor state stored in the
+session.
+They return a file response with the correct `Content-Type` and
+`Content-Disposition` headers.
 
 ## Security note
 
