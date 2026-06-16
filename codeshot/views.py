@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
@@ -64,3 +64,10 @@ def preview_view(request):
             "padding": preview_context["preview_padding"],
         }
     )
+
+
+def download_png_view(request):
+    return HttpResponse("here will be a download_png_view")
+
+def download_jpg_view(request):
+    return HttpResponse("here will be a download_jpeg_view")
