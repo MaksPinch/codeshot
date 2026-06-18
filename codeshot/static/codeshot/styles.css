@@ -65,3 +65,35 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+.preview-actions {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    padding-top: 0;
+    margin-top: 16px;
+}
+
+
+.download-link {
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #d9e0ec;
+    border-radius: 6px;
+
+    background-color: #ffffff;
+    color: #172033;
+
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.download-link:hover {
+  color: #e74c3c;
+}
+
+.download-link:active {
+  transform: scale(0.95);
+}
+
