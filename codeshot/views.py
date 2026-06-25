@@ -1,12 +1,16 @@
 import io
-from django.http import JsonResponse, HttpResponse, FileResponse
+import logging
+
+from django.http import FileResponse, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from .services.exports import ExportError
 from .forms import CodeInputForm
+from .services.exports import generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
-from .services.exports import generate_image
+
 
 def persist_form_data(request, cleaned_data):
     for field_name in ["code", "language", "filename", "theme", "font_size", "padding"]:
@@ -38,15 +42,9 @@ def get_initial_form_data(request):
         "code": request.session.get("code", 'print("Hello, CodeShot!")'),
         "language": request.session.get("language", "python"),
         "filename": request.session.get("filename", "main.py"),
-        "theme": request.session.get(
-            "theme", "monokai"
-        ),
-        "font_size": request.session.get(
-            "font_size", 14
-        ),
-        "padding": request.session.get(
-            "padding", 16
-        ),
+        "theme": request.session.get("theme", "monokai"),
+        "font_size": request.session.get("font_size", 14),
+        "padding": request.session.get("padding", 16),
     }
 
 
@@ -68,18 +66,31 @@ def preview_view(request):
     )
 
 
+logger = logging.getLogger(__name__)
+
+
 def download_png_view(request):
-    settings = get_editor_state(request.session)
-    image_bytes = generate_image(settings, "png")
-    buffer = io.BytesIO(image_bytes)
+    try:
+        settings = get_editor_state(request.session)
+        image_bytes = generate_image(settings, "png")
+        buffer = io.BytesIO(image_bytes)
 
-    return FileResponse(buffer, as_attachment=True, filename="codeshot.png")
+        return FileResponse(buffer, as_attachment=True, filename="codeshot.png")
+    except ExportError as e:
+        logger.exception("Failed to generate PNG export")
 
-
+        return HttpResponse("Could not generate image export.",status=500)
 
 def download_jpg_view(request):
-    settings = get_editor_state(request.session)
-    image_bytes = generate_image(settings, "jpg")
-    buffer = io.BytesIO(image_bytes)
+    try:
+        settings = get_editor_state(request.session)
+        image_bytes = generate_image(settings, "jpg")
+        buffer = io.BytesIO(image_bytes)
 
-    return FileResponse(buffer, as_attachment=True, filename="codeshot.jpg")
+        return FileResponse(buffer, as_attachment=True, filename="codeshot.jpg")
+    except ExportError as e:
+        logger.exception("Failed to generate JPEG export")
+
+        return HttpResponse("Could not generate image export.",status=500)
+
+
