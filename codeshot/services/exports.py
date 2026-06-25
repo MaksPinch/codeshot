@@ -1,6 +1,9 @@
 import io
 from PIL import Image
 
+class ExportError(Exception):
+    pass
+
 def generate_image(settings, format):
     frmt = format.lower()
 
@@ -11,8 +14,7 @@ def generate_image(settings, format):
         mode = "RGB"
         save_format = "JPEG"
     else:
-        raise ValueError(f"Unsupported format: {format}")
-
+        raise ExportError(f"Unsupported image format: {format}")
     image = Image.new(mode, (1,1), "white")
 
     buffer = io.BytesIO()
