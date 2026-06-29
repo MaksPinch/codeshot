@@ -1,7 +1,6 @@
 import pytest
 from django.urls import reverse
 
-
 def upload_data_into_session(client):
     session = client.session
     session["code"] = "print('download png')"

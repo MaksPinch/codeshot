@@ -1,6 +1,6 @@
 import pytest
 
-from codeshot.services.exports import generate_image
+from codeshot.services.exports import generate_image, ExportError
 
 RANDDOME_SETTINGS = {
     "code": "print('export')",
@@ -27,5 +27,5 @@ def test_generate_export_return_jpg_bytes():
 
 
 def test_generate_export_return_unknownformat():
-    with pytest.raises(ValueError):
+    with pytest.raises(ExportError):
         result = generate_image(RANDDOME_SETTINGS, "txt")
