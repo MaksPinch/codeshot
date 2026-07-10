@@ -36,6 +36,19 @@ session.
 They return a file response with the correct `Content-Type` and
 `Content-Disposition` headers.
 
+## Product analytics
+CodeShot stores privacy-safe product events to understand basic usage.
+Stored:
+- event name
+- language
+- theme
+- export format
+- creation timestamp
+Not stored:
+- user source code
+- generated image bytes
+- local filenames that may contain private project names
+
 ## Security note
 
 User code must not be rendered with `|safe` directly.
