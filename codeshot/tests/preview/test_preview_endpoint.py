@@ -1,6 +1,8 @@
 from django.urls import reverse
 import pytest
 from rest_framework.test import APIClient
+from codeshot.models import ProductEvent
+from codeshot.services.analytics import record_product_event
 
 @pytest.mark.django_db
 def test_preview_endpoint_returns_highlighted_payload():
@@ -37,3 +39,24 @@ def test_preview_endpoint_rejects_get():
     client = APIClient()
     response = client.get(reverse("preview"))
     assert response.status_code == 405
+
+
+
+@pytest.mark.django_db
+def test_preview_endpoint_records_preview_event(client):
+    response = client.post(
+        reverse("preview"),
+        {
+            "code": "print('hello')",
+            "language": "python",
+            "filename": "hello.py",
+            "theme": "dracula",
+            "font_size": 14,
+            "padding": 24,
+        },
+    )
+
+    assert response.status_code == 200
+    event = ProductEvent.objects.get(event_name=ProductEvent.PREVIEW_CREATED)
+    assert event.language == "python"
+    assert event.theme == "dracula"

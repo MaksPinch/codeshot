@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 
 from codeshot.models import ProductEvent
 from codeshot.services.analytics import record_product_event
@@ -12,10 +13,11 @@ def test_analytics_service():
             "code": "print('secret')",
             "language": "python",
             "theme": "dracula",
-        }
+        },
     )
 
     assert event.event_name == ProductEvent.PREVIEW_CREATED
     assert event.language == "python"
     assert event.theme == "dracula"
-    
+    assert not hasattr(event, "code")
+
