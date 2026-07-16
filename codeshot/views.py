@@ -1,17 +1,16 @@
 import io
 import logging
 
-from django.http import FileResponse, JsonResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-from .services.exports import ExportError
 from .forms import CodeInputForm
-from .services.exports import generate_image
+from .models import ProductEvent
+from .services.analytics import get_product_event_summary, record_product_event
+from .services.exports import ExportError, generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
-from .services.analytics import record_product_event
-from .models import ProductEvent
 
 
 def persist_form_data(request, cleaned_data):
@@ -71,12 +70,13 @@ def preview_view(request):
 
 logger = logging.getLogger(__name__)
 
+
 def helper_download_response(request, image_format, file_name):
     editor_state = get_editor_state(request.session)
     record_product_event(
         event_name=ProductEvent.EXPORT_STARTED,
         editor_state=editor_state,
-        export_format=image_format
+        export_format=image_format,
     )
     try:
         image_bytes = generate_image(editor_state, image_format)
@@ -84,32 +84,34 @@ def helper_download_response(request, image_format, file_name):
         record_product_event(
             event_name=ProductEvent.EXPORT_COMPLETED,
             editor_state=editor_state,
-            export_format=image_format
+            export_format=image_format,
         )
         return FileResponse(buffer, as_attachment=True, filename=file_name)
-    except ExportError as e:
+    except ExportError:
         logger.exception("Failed to generate %s format", image_format)
         record_product_event(
             event_name=ProductEvent.EXPORT_FAILED,
             editor_state=editor_state,
-            export_format=image_format
+            export_format=image_format,
         )
-        return HttpResponse("Could not generate image export.",status=500)
+        return HttpResponse("Could not generate image export.", status=500)
 
 
 def download_png_view(request):
     return helper_download_response(
-        request,
-        image_format="png",
-        file_name="codeshot.png"
+        request, image_format="png", file_name="codeshot.png"
     )
+
 
 def download_jpg_view(request):
     return helper_download_response(
-        request,
-        image_format="jpg",
-        file_name="codeshot.jpg"
+        request, image_format="jpg", file_name="codeshot.jpg"
     )
+
 
 def health_view(request):
     return JsonResponse({"status": "ok"})
+
+
+def stats_view(request):
+    return JsonResponse(get_product_event_summary())
