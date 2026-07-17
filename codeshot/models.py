@@ -18,3 +18,12 @@ class ProductEvent(models.Model):
     theme = models.CharField(max_length=32, blank=True)
     export_format = models.CharField(max_length=16, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["event_name", "created_at"]),
+        ]
+
+    def __str__(self):
+        return f"{self.event_name} at {self.created_at:%Y-%m-%d %H:%M:%S}"
+
