@@ -10,6 +10,8 @@ from .forms import CodeInputForm
 from .services.exports import generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
+from .services.analytics import record_product_event
+from .models import ProductEvent
 
 
 def persist_form_data(request, cleaned_data):
@@ -55,6 +57,7 @@ def preview_view(request):
         return JsonResponse({"errors": form.errors}, status=400)
     persist_form_data(request, form.cleaned_data)
     preview_context = build_preview_context(form.cleaned_data)
+    record_product_event(ProductEvent.PREVIEW_CREATED, form.cleaned_data)
     return JsonResponse(
         {
             "highlighted_code": preview_context["highlighted_code"],
