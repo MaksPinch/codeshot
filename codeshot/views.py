@@ -79,7 +79,7 @@ def download_png_view(request):
 
 def download_jpg_view(request):
     settings = get_editor_state(request.session)
-    image_bytes = generate_image(settings, "png")
+    image_bytes = generate_image(settings, "jpg")
     buffer = io.BytesIO(image_bytes)
 
     return FileResponse(buffer, as_attachment=True, filename="codeshot.jpg")
