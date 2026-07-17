@@ -71,30 +71,45 @@ def preview_view(request):
 
 logger = logging.getLogger(__name__)
 
+def helper_download_response(request, image_format, file_name):
+    editor_state = get_editor_state(request.session)
+    record_product_event(
+        event_name=ProductEvent.EXPORT_STARTED,
+        editor_state=editor_state,
+        export_format=image_format
+    )
+    try:
+        image_bytes = generate_image(editor_state, image_format)
+        buffer = io.BytesIO(image_bytes)
+        record_product_event(
+            event_name=ProductEvent.EXPORT_COMPLETED,
+            editor_state=editor_state,
+            export_format=image_format
+        )
+        return FileResponse(buffer, as_attachment=True, filename=file_name)
+    except ExportError as e:
+        logger.exception("Failed to generate %s format", image_format)
+        record_product_event(
+            event_name=ProductEvent.EXPORT_FAILED,
+            editor_state=editor_state,
+            export_format=image_format
+        )
+        return HttpResponse("Could not generate image export.",status=500)
+
 
 def download_png_view(request):
-    try:
-        settings = get_editor_state(request.session)
-        image_bytes = generate_image(settings, "png")
-        buffer = io.BytesIO(image_bytes)
-
-        return FileResponse(buffer, as_attachment=True, filename="codeshot.png")
-    except ExportError as e:
-        logger.exception("Failed to generate PNG export")
-
-        return HttpResponse("Could not generate image export.",status=500)
+    return helper_download_response(
+        request,
+        image_format="png",
+        file_name="codeshot.png"
+    )
 
 def download_jpg_view(request):
-    try:
-        settings = get_editor_state(request.session)
-        image_bytes = generate_image(settings, "jpg")
-        buffer = io.BytesIO(image_bytes)
-
-        return FileResponse(buffer, as_attachment=True, filename="codeshot.jpg")
-    except ExportError as e:
-        logger.exception("Failed to generate JPEG export")
-
-        return HttpResponse("Could not generate image export.",status=500)
+    return helper_download_response(
+        request,
+        image_format="jpg",
+        file_name="codeshot.jpg"
+    )
 
 def health_view(request):
     return JsonResponse({"status": "ok"})
