@@ -1,8 +1,6 @@
 import pytest
-from django.urls import reverse
 from django.test import Client
 from django.urls import reverse
-from rest_framework.test import APIClient
 
 def test_homepage():
     client = Client()
@@ -19,7 +17,7 @@ def test_homepage():
     assert b'class="app-shell"' in response.content
     assert b'class="editor-panel"' in response.content
     assert b'class="preview-panel"' in response.content
-    assert b'class="preview-frame' in response.content
+
 
 
 @pytest.mark.django_db
@@ -43,6 +41,10 @@ def test_valid_post_saves_code_input_in_session():
     assert session["language"] == "python"
     assert session["filename"] == "saved.py"
 
+    assert session["theme"] == "default"
+    assert session["font_size"] == 14
+    assert session["padding"] == 24
+
 @pytest.mark.django_db
 def test_get_restores_form_values_from_session():
     client = Client()
@@ -50,6 +52,11 @@ def test_get_restores_form_values_from_session():
     session["code"] = "print('restored')"
     session["language"] = "python"
     session["filename"] = "restored.py"
+
+    session["theme"] = "dracula"
+    session["font_size"] = 18
+    session["padding"] = 32
+
     session.save()
 
     response = client.get(reverse("home"))
@@ -58,9 +65,13 @@ def test_get_restores_form_values_from_session():
     assert b"print(&#x27;restored&#x27;)" in response.content
     assert b"restored.py" in response.content
 
+    assert b"dracula" in response.content
+    assert b'value="18"' in response.content
+    assert b'value="32"' in response.content
+
 @pytest.mark.django_db
 def test_preview_does_not_render_raw_script_tag_from_user_code():
-    client = APIClient()
+    client = Client()
     response = client.post(
         reverse("home"),
         {

@@ -11,3 +11,4 @@ def highlight_code(code, language):
 
     formatter = HtmlFormatter()
     return highlight(code, lexer, formatter)
+    

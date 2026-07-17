@@ -1,7 +1,8 @@
 from django.urls import reverse
+import pytest
 from rest_framework.test import APIClient
 
-
+@pytest.mark.django_db
 def test_preview_endpoint_returns_highlighted_payload():
     client = APIClient()
     response = client.post(
