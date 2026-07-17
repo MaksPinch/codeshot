@@ -15,7 +15,7 @@ def generate_image(settings, format):
         save_format = "JPEG"
     else:
         raise ExportError(f"Unsupported image format: {format}")
-    image = Image.new(mode, (1,1), "white")
+    image = Image.new(mode, (100,100), "white")
 
     buffer = io.BytesIO()
     image.save(buffer, save_format)
