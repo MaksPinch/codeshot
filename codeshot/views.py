@@ -1,10 +1,12 @@
-from django.http import JsonResponse, HttpResponse
+import io
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from .forms import CodeInputForm
 from .services.preview import build_preview_context
-
+from .services.state import get_editor_state
+from .services.exports import generate_image
 
 def persist_form_data(request, cleaned_data):
     for field_name in ["code", "language", "filename", "theme", "font_size", "padding"]:
@@ -67,7 +69,17 @@ def preview_view(request):
 
 
 def download_png_view(request):
-    return HttpResponse("here will be a download_png_view")
+    settings = get_editor_state(request.session)
+    image_bytes = generate_image(settings, "png")
+    buffer = io.BytesIO(image_bytes)
+
+    return FileResponse(buffer, as_attachment=True, filename="codeshot.png")
+
+
 
 def download_jpg_view(request):
-    return HttpResponse("here will be a download_jpeg_view")
+    settings = get_editor_state(request.session)
+    image_bytes = generate_image(settings, "png")
+    buffer = io.BytesIO(image_bytes)
+
+    return FileResponse(buffer, as_attachment=True, filename="codeshot.jpg")
