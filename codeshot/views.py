@@ -93,4 +93,5 @@ def download_jpg_view(request):
 
         return HttpResponse("Could not generate image export.",status=500)
 
-
+def health_view(request):
+    return JsonResponse({"status": "ok"})
