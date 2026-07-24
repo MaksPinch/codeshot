@@ -31,10 +31,52 @@ CodeShot exports the current editor state as an image.
 Supported formats:
 - PNG: `GET /download/png/`
 - JPG: `GET /download/jpg/`
+
 The export endpoints use the latest valid editor state stored in the
 session.
 They return a file response with the correct `Content-Type` and
 `Content-Disposition` headers.
+
+## Auth API
+
+CodeShot uses session-based authentication built on plain Django
+(no DRF, no JWT). A successful login sets a `sessionid` cookie, and the
+browser sends it with every following request. Unsafe HTTP methods
+(`POST`) require a valid CSRF token.
+
+### Endpoints
+
+| Method | URL | Description | Success |
+|---|---|---|---|
+| `POST` | `/api/auth/register/` | Create a new user and start a session | `201` |
+| `POST` | `/api/auth/login/` | Authenticate and start a session | `200` |
+| `POST` | `/api/auth/logout/` | End the current session, no body | `204` |
+| `GET` | `/api/auth/me/` | Return the current user | `200` |
+
+### Successful response
+
+`register`, `login` and `me` return the current user in the same format:
+
+```json
+{
+  "user": {
+    "id": 1,
+    "username": "mike",
+    "groups": ["Analysts"],
+    "permissions": ["codeshot.view_product_stats"]
+  }
+}
+```
+
+The response never contains `password`, `password_hash` or `is_superuser`.
+
+### Error responses
+
+| Status | Meaning | Body |
+|---|---|---|
+| `400` | Validation error | `{"errors": {"field": ["message"]}}` |
+| `401` | Not authenticated | `{"error": "Authentication required"}` |
+| `403` | Authenticated, but not allowed | `{"error": "Permission denied"}` |
 
 ## Product analytics
 CodeShot stores privacy-safe product events to understand basic usage.

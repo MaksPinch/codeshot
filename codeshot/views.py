@@ -115,3 +115,7 @@ def health_view(request):
 
 def stats_view(request):
     return JsonResponse(get_product_event_summary())
+
+
+def not_implemented_yet(request):
+    return HttpResponse('Method is not implemented yet', status=501)
