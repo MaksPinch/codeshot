@@ -1,13 +1,15 @@
 import io
 import logging
 
+from django.contrib.auth import login
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-from .forms import CodeInputForm
+from .forms import CodeInputForm, RegisterForm
 from .models import ProductEvent
 from .services.analytics import get_product_event_summary, record_product_event
+from .services.auth import auth_user
 from .services.exports import ExportError, generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
@@ -117,5 +119,15 @@ def stats_view(request):
     return JsonResponse(get_product_event_summary())
 
 
+@require_POST
+def register_user(request):
+    form = RegisterForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"errors": form.errors}, status=400)
+    user = auth_user(form.cleaned_data)
+    login(request, user)
+    return HttpResponse("User is registered", status=201)
+
+
 def not_implemented_yet(request):
-    return HttpResponse('Method is not implemented yet', status=501)
+    return HttpResponse("Method is not implemented yet", status=501)

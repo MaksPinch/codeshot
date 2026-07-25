@@ -26,4 +26,3 @@ class ProductEvent(models.Model):
 
     def __str__(self):
         return f"{self.event_name} at {self.created_at:%Y-%m-%d %H:%M:%S}"
-
