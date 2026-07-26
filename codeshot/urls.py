@@ -5,6 +5,7 @@ from .views import (
     download_png_view,
     health_view,
     home_view,
+    login_user,
     not_implemented_yet,
     preview_view,
     register_user,
@@ -19,7 +20,7 @@ urlpatterns = [
     path("health/", health_view, name="health"),
     path("stats/", stats_view, name="stats"),
     path("api/auth/register/", register_user, name="register"),
-    path("api/auth/login/", not_implemented_yet, name="login"),
+    path("api/auth/login/", login_user, name="login"),
     path("api/auth/logout/", not_implemented_yet, name="logout"),
     path("api/auth/me/", not_implemented_yet, name="me"),
 ]

@@ -36,3 +36,9 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("Passwords do not match")
 
         return cleaned_data
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=30, required=True)
+    password = forms.CharField(required=True)
+

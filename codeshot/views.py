@@ -1,15 +1,15 @@
 import io
 import logging
 
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
-from .forms import CodeInputForm, RegisterForm
+from .forms import CodeInputForm, LoginForm, RegisterForm
 from .models import ProductEvent
 from .services.analytics import get_product_event_summary, record_product_event
-from .services.auth import auth_user
+from .services.auth import create_user, serialize_user
 from .services.exports import ExportError, generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
@@ -124,9 +124,26 @@ def register_user(request):
     form = RegisterForm(request.POST)
     if not form.is_valid():
         return JsonResponse({"errors": form.errors}, status=400)
-    user = auth_user(form.cleaned_data)
+    user = create_user(form.cleaned_data)
     login(request, user)
-    return HttpResponse("User is registered", status=201)
+    return JsonResponse({"message": "User is registered"}, status=201)
+
+
+@require_POST
+def login_user(request):
+    form = LoginForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"errors": form.errors}, status=400)
+    user = authenticate(
+        request,
+        username=form.cleaned_data["username"],
+        password=form.cleaned_data["password"],
+    )
+    if user is None:
+        return JsonResponse({"error": "Invalid credentials"}, status=401)
+    login(request, user)
+    serialized_user = serialize_user(user)
+    return JsonResponse({"user": serialized_user})
 
 
 def not_implemented_yet(request):
