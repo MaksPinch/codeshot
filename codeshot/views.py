@@ -1,7 +1,7 @@
 import io
 import logging
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -13,6 +13,10 @@ from .services.auth import create_user, serialize_user
 from .services.exports import ExportError, generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
+
+
+def not_implemented_yet(request):
+    return HttpResponse("Method is not implemented yet", status=501)
 
 
 def persist_form_data(request, cleaned_data):
@@ -126,7 +130,10 @@ def register_user(request):
         return JsonResponse({"errors": form.errors}, status=400)
     user = create_user(form.cleaned_data)
     login(request, user)
-    return JsonResponse({"message": "User is registered"}, status=201)
+    serialized_user = serialize_user(user)
+    return JsonResponse(
+        {"message": "User is registered", "user": serialized_user}, status=201
+    )
 
 
 @require_POST
@@ -146,5 +153,14 @@ def login_user(request):
     return JsonResponse({"user": serialized_user})
 
 
-def not_implemented_yet(request):
-    return HttpResponse("Method is not implemented yet", status=501)
+@require_POST
+def logout_user(request):
+    logout(request)
+    return HttpResponse(status=204)
+
+
+def me_information(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+    serialized_user = serialize_user(request.user)
+    return JsonResponse({"user": serialized_user})
