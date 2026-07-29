@@ -6,6 +6,7 @@ from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
+from .decorators import json_login_required, json_permission_required
 from .forms import CodeInputForm, LoginForm, RegisterForm
 from .models import ProductEvent
 from .services.analytics import get_product_event_summary, record_product_event
@@ -119,6 +120,8 @@ def health_view(request):
     return JsonResponse({"status": "ok"})
 
 
+@json_login_required
+@json_permission_required("codeshot.view_product_stats")
 def stats_view(request):
     return JsonResponse(get_product_event_summary())
 
