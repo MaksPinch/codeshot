@@ -24,6 +24,10 @@ class ProductEvent(models.Model):
             models.Index(fields=["event_name", "created_at"]),
         ]
 
+        permissions = [
+            ("export_images", "Can export images"),
+            ("view_product_stats", "Can view product statistics"),
+        ]
+
     def __str__(self):
         return f"{self.event_name} at {self.created_at:%Y-%m-%d %H:%M:%S}"
-

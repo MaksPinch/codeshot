@@ -5,7 +5,11 @@ from .views import (
     download_png_view,
     health_view,
     home_view,
+    login_user,
+    logout_user,
+    me_information,
     preview_view,
+    register_user,
     stats_view,
 )
 
@@ -16,4 +20,8 @@ urlpatterns = [
     path("download/jpg", download_jpg_view, name="download_jpg"),
     path("health/", health_view, name="health"),
     path("stats/", stats_view, name="stats"),
+    path("api/auth/register/", register_user, name="register"),
+    path("api/auth/login/", login_user, name="login"),
+    path("api/auth/logout/", logout_user, name="logout"),
+    path("api/auth/me/", me_information, name="me"),
 ]

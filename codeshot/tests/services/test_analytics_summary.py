@@ -16,7 +16,7 @@ def test_product_event_summary_counts_events():
 
     summary = get_product_event_summary()
 
-    assert summary["total_event"] == 2
+    assert summary["total_events"] == 2
     assert {"event_name": "preview_created", "count": 1} in summary["by_event_name"]
-    assert {"export_format": "png", "count": 1} in summary["export_by_format"]
-    
+    assert {"export_format": "png", "count": 1} in summary["exports_by_format"]
+
