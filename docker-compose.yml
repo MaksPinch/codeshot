@@ -10,6 +10,8 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - media_data:/codeshot/media
 
   db:
     image: postgres:16
@@ -32,6 +34,11 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - media_data:/codeshot/media
 
 volumes:
   postgres_data_codeshot:
+  media_data:
+
+

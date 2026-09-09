@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -31,3 +32,32 @@ class ProductEvent(models.Model):
 
     def __str__(self):
         return f"{self.event_name} at {self.created_at:%Y-%m-%d %H:%M:%S}"
+
+
+class ExportJob(models.Model):
+    PNG_FORMAT = "png"
+    JPG_FORMAT = "jpg"
+
+    FORMAT_LIST = [
+        (PNG_FORMAT, "PNG"),
+        (JPG_FORMAT, "JPEG"),
+    ]
+
+    PENDING_STATUS = "pending"
+    PROCESSING_STATUS = "processing"
+    COMPLETED_STATUS = "completed"
+    FAILED_STATUS = "failed"
+
+    STATUS_LIST = [
+        (PENDING_STATUS, "Pending"),
+        (PROCESSING_STATUS, "Processing"),
+        (COMPLETED_STATUS, "Completed"),
+        (FAILED_STATUS, "Failed"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    export_format = models.CharField(max_length=16, choices=FORMAT_LIST)
+    status = models.CharField(max_length=64, choices=STATUS_LIST, default=PENDING_STATUS)
+    file_name = models.CharField(max_length=128, blank=True)
+    error = models.TextField(blank=True)
+
