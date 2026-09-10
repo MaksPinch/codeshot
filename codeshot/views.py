@@ -165,6 +165,7 @@ def logout_user(request):
 
 @require_POST
 @json_login_required
+@json_permission_required("codeshot.export_images")
 def create_export_job(request):
     form = ExportForm(request.POST)
     if not form.is_valid():
@@ -182,6 +183,8 @@ def create_export_job(request):
 @json_login_required
 def export_job_detail(request, job_id):
     export_job = get_object_or_404(ExportJob, id=job_id)
+    if export_job.user_id != request.user.id:
+        return JsonResponse({"error": "Permission denied"}, status=403)
     return JsonResponse(
         {
             "id": export_job.id,
