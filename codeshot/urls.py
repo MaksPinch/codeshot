@@ -1,8 +1,10 @@
 from django.urls import path
 
 from .views import (
+    create_export_job,
     download_jpg_view,
     download_png_view,
+    export_job_detail,
     health_view,
     home_view,
     login_user,
@@ -24,4 +26,6 @@ urlpatterns = [
     path("api/auth/login/", login_user, name="login"),
     path("api/auth/logout/", logout_user, name="logout"),
     path("api/auth/me/", me_information, name="me"),
+    path("api/exports/", create_export_job, name="create_export"),
+    path("api/exports/<int:job_id>/", export_job_detail, name="export_detail"),
 ]
