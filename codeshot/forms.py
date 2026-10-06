@@ -42,3 +42,7 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=30, required=True)
     password = forms.CharField(required=True)
 
+
+class ExportForm(forms.Form):
+    FORMAT_CHOICES = [("png", "PNG"), ("jpg", "JPEG")]
+    export_format = forms.ChoiceField(choices=FORMAT_CHOICES)

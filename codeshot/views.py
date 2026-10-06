@@ -3,17 +3,18 @@ import logging
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import FileResponse, HttpResponse, JsonResponse
-from django.shortcuts import render
-from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.http import require_GET, require_POST
 
 from .decorators import json_login_required, json_permission_required
-from .forms import CodeInputForm, LoginForm, RegisterForm
-from .models import ProductEvent
+from .forms import CodeInputForm, ExportForm, LoginForm, RegisterForm
+from .models import ExportJob, ProductEvent
 from .services.analytics import get_product_event_summary, record_product_event
 from .services.auth import create_user, serialize_user
 from .services.exports import ExportError, generate_image
 from .services.preview import build_preview_context
 from .services.state import get_editor_state
+from .tasks import export_image_task
 
 
 def not_implemented_yet(request):
@@ -160,6 +161,39 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return HttpResponse(status=204)
+
+
+@require_POST
+@json_login_required
+@json_permission_required("codeshot.export_images")
+def create_export_job(request):
+    form = ExportForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({"errors": form.errors}, status=400)
+    export_format = form.cleaned_data["export_format"]
+    job = ExportJob.objects.create(
+        user=request.user,
+        export_format=export_format,
+    )
+    export_image_task.delay(job.id)
+    return JsonResponse({"id": job.id, "status": job.status}, status=202)
+
+
+@require_GET
+@json_login_required
+def export_job_detail(request, job_id):
+    export_job = get_object_or_404(ExportJob, id=job_id)
+    if export_job.user_id != request.user.id:
+        return JsonResponse({"error": "Permission denied"}, status=403)
+    return JsonResponse(
+        {
+            "id": export_job.id,
+            "export_format": export_job.export_format,
+            "status": export_job.status,
+            "file_name": export_job.file_name,
+            "error": export_job.error,
+        }
+    )
 
 
 def me_information(request):
